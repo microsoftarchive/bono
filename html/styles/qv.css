@@ -1,0 +1,286 @@
+html, body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.gate {
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    border-style: none;
+    margin: 3px;    
+    background-color: white;
+
+}
+div#qv-sharp{
+    font-family: 'Courier New', Courier, monospace;
+    height:500px;
+}
+.hover {
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: rgb(255, 233, 193);
+}
+.current {
+    border-right-width: 5px;
+    border-right-style: solid;
+    border-right-color: orange;
+}
+.main-table{
+}
+.secondary-table{
+}
+div#qv-target{ 
+}
+.narrow-row{
+    margin-bottom: -50px;
+}
+.narrow-col{
+   padding-left: 0px;
+   padding-right: 0px;
+}
+.visual {
+    border-radius: 25px;
+    background-color: rgb(32, 32, 32);
+    color:white;
+    cursor:pointer;
+    white-space: nowrap;
+    border-style:none;
+    background-position: center;
+    background-size:cover;
+    width: 37px;
+    height:37px;
+    display:inline-block;
+}
+.sign {
+    width:20px;
+    display: inline-block;
+    text-align: center;
+}
+.positive {
+    color: lawngreen;
+}
+.negative {
+    color: red;
+}
+.Ry {
+ 
+}
+.N {
+   border-style:none;
+   background-color:transparent;
+}
+.C {
+    border-style:none;
+    background-color:transparent;
+ }
+ 
+.C-circle{
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    background-color: black;
+    left: 18px;
+}
+.N-circle {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    position: relative;
+    border-style:solid;
+    border-width: 1px;
+    left: 6px;
+}
+.Circle-Out {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    position: relative;
+    border-style:solid;
+    border-width: 1px;
+    display:inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom:-5px;
+}
+.Circle-In {
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    position: relative;
+    border-style:none;
+    background: skyblue;
+}
+.N-inner1 {
+    content: '';
+    position: relative;
+    width: 35px;
+    height: 2px;
+    background-color:black;
+    border-radius: 0;
+    top: 16px;
+    z-index: 0;
+}
+.N-inner2 {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 36px;
+    background-color:black;
+    border-radius: 0;
+    left: 16px;
+    top: -1px;
+    z-index: 0;
+}
+.Empty{
+    width: 50px;
+    height:50px;
+    border-style: none;
+    background-color: transparent;
+}
+.circuit-button {
+    height: 50px;
+    width: 100px;
+}
+.category-td {
+    background-color: darkslategrey;
+    color:white;
+}
+.link-up {
+    background-image: url('../imgs/link-up.jpg');
+}
+.link-down {
+    background-image: url('../imgs/link-down.jpg');
+}
+.link-both {
+    background-image: url('../imgs/link-both.jpg');
+}
+.unlink-up {
+    background-image: url('../imgs/unlink-up.jpg');
+}
+.unlink-down {
+    background-image: url('../imgs/unlink-down.jpg');
+}
+.unlink-both {
+    background-image: url('../imgs/unlink-both.jpg');
+}
+.vl-a {
+    background-image: url('../imgs/vl-a.jpg');
+}
+.vl-u {
+    background-image: url('../imgs/vl-u.jpg');
+}
+.vl-d {
+    background-image: url('../imgs/vl-b.jpg');
+}
+.hl-a {
+    background-image: url('../imgs/hl-a.jpg');
+}
+.lane-head {
+    background-image: url('../imgs/base0.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-style:none;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+    margin: 10px;    
+}
+.classic-bit {
+    background-image:none;
+}
+.Measure {
+    background-image: url('../imgs/measure.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.active-mode {
+   border-width: 5px;
+}
+.Probability {
+}
+.gate-td {
+    padding: 10px;
+}
+.panel-table td {
+    background-image: none;
+}
+.circuit-table {
+    border-collapse: collapse;
+}
+.panel {
+    min-width: 200px;
+  /* width: 200px; */
+  background-color: white; 
+  display: block;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1000;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  padding: 10px;
+}
+.param-name{
+    width:80px;
+    display: inline-block;
+}
+.inner-panel {
+    min-width: 200px;
+  /* width: 200px; */
+  background-color: white; 
+  display: block;
+  /* Position the tooltip */
+  padding: 10px;
+}
+.panel-button {
+  position: absolute;
+  top: 0px;
+  right:0px;
+  width:20px;
+  height:20px;
+  background-color: darkgray;
+}
+.nodrop {
+    pointer-events: none;
+}
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+}
+.output {
+    background-color: blue;
+    padding: 3px;
+    color:white;
+}
+.multi {
+    background-color: lawngreen;
+}
+#horizontal-divider {
+    bottom: 20em;
+    height: 5px;
+}
+.left {
+    border-left: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.right {
+    border-right: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: right;
+}

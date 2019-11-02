@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<title>Bono</title>
+		
+		<meta charset="utf-8">		
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<!-- CSS -->
+        <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+		<link rel="stylesheet" href="styles/qv.css">
+		<link rel="stylesheet" href="scripts/split-pane/split-pane.css">
+		<!-- FAVICONS -->
+		<link rel="shortcut icon" href="img/favicon/favicon.png" type="image/png">
+		<link rel="icon" href="img/favicon/favicon.png" type="image/png">
+		
+		<style type="text/css">
+			#left-component {
+				min-width: 10em;
+				right: 10em;
+				margin-right: 5px;
+				overflow: hidden;
+			}
+			#left-component:hover{
+				overflow: auto;
+			}           
+			#my-divider {
+				right: 10em;
+				width: 5px;
+            }
+            #right-component {
+				width: 10em;
+				overflow: hidden;
+			}           
+			#right-component:hover{
+				overflow: auto;
+			}        
+		</style>
+		
+	</head>
+
+    <body>
+
+    	<div id="myModal" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		      </div>
+		      <div class="modal-body">
+		      	<div class="row">
+		      		<div class="col-md-12 col-lg-8">
+		      			<div class="welcome-wrap">
+			      			<div class="welcome-contents">
+			      				<h1>Welcome to BONO</h1>
+			      				<p>A drag-and-drop quantum circuit simulator.</p>
+			      			</div>
+			      			<div class="edit-butn text-center">
+			      				<a href="#" class="btn edit-btn" onclick="closeDialog();">EDIT CIRCUIT</a>
+			      			</div>
+			      			<div class="options-wrap">
+			      				<div class="row">
+			      					<div class="col-12 col-sm-4 col-md-4">
+			      						<div class="options option-1 text-center">
+			      							<i class="fa fa-info-circle"></i>
+			      							<a href="#">How to USe</a>
+			      						</div>
+			      					</div>
+			      					<div class="col-12 col-sm-4 col-md-4">
+			      						<div class="options option-2 text-center">
+			      							<i class="fa fa-play-circle"></i>
+			      							<a href="#">Tutorial Video</a>
+			      						</div>
+			      					</div>
+			      					<div class="col-12 col-sm-4 col-md-4">
+			      						<div class="options option-3 text-center">
+			      							<i class="fa fa-github"></i>
+			      							<a href="#">Source Code</a>
+			      						</div>
+			      					</div>
+			      				</div>
+			      			</div>
+			      		</div>
+		      		</div>
+		      		<div class="col-md-12 col-lg-4">
+		      			<div class="example-circuits">
+		      				<h6>Example circuits</h6>
+		      				<ul class="list-unstyled">
+		      					<li><a href="#">Grover Search</a></li>
+		      					<li><a href="#">Shor Period Finding</a></li>
+		      					<li><a href="#">Bell Inequality Test (CHSH)</a></li>
+		      					<li><a href="#">Quantum Teleportation</a></li>
+		      					<li><a href="#">Superdense Coding</a></li>
+		      					<li><a href="#">Delayed Choice Eraser</a></li>
+		      					<li><a href="#">Symmetry Breaking</a></li>
+		      					<li><a href="#">Quantum Fourier Transform</a></li>
+		      					<li><a href="#">Reversible Addition</a></li>
+		      					<li><a href="#">Magic State Distillation</a></li>
+		      				</ul>
+		      			</div>
+		      		</div>
+		      	</div>
+		      </div>
+		    </div>
+
+		  </div>
+		</div>
+
+    	<div class="header">
+		  	<a href="#" id="menu-action">
+		   		<i class="fa fa-bars"></i>
+		    	<span>Close</span>
+		  	</a>
+		  	<div class="row">
+		  		<div class="col-6 col-sm-4 col-md-3">
+		  			<div class="logo">
+				   		<a href="index.html"><img src="img/header-logo.png" class="img-fluid" alt="logo" /></a>
+				  	</div>
+		  		</div>		  		
+		  	</div>
+		</div>
+		<div class="sidebar">
+		  	<ul>
+			    <li class="active">
+			    	<a href="#">
+			    		<img src="img/icons/icon-1.png" class="img-fluid" alt="icon" />
+			    		<span>Home</span>
+			    	</a>
+			    </li>
+			    <li>
+			    	<a href="#" class="tuts">
+			    		<img src="img/icons/icon-2.png" class="img-fluid" alt="icon" />
+			    		<span>Tutorials <i class="fa fa-caret-right"></i></span>
+			    		<ul class="list-unstyled tuts-list sub-menu">
+			    			<li><a href="#" onclick="loadTutorial1();">Tutorial 1 - Superposition</a></li>
+			    			<li><a href="#" onclick="loadTutorial2();">Tutorial 2 - Entanglement</a></li>
+			    			<li><a href="#" onclick="loadTutorial3();">Tutorial 3 - Phases</a></li>
+			    			<li><a href="#" onclick="loadTutorial4();">Tutorial 4 - Toffoli gate</a></li>
+			    			<li><a href="#" onclick="loadTutorial5();">Tutorial 5 - Output message</a></li>
+			    			<li><a href="#" onclick="loadTutorial6();">Tutorial 6 - Bell state</a></li>
+			    			<li><a href="#" onclick="loadEmpty();">Clear</a></li>
+			    		</ul>
+			    	</a>
+			    </li>
+			    <li>
+			    	<a href="#" class="samples">
+			    		<img src="img/icons/icon-3.png" class="img-fluid" alt="icon" />
+			    		<span>Samples <i class="fa fa-caret-right"></i></span>
+			    		<ul class="list-unstyled samples-list sub-menu">
+			    			<li><a href="#" onclick="loadRandom();">Quantum Random Number Generator</a></li>
+			    			<li><a href="#" onclick="loadTeleportation();">Quantum Teleportation</a></li>			    			
+			    			<li><a href="#" onclick="load8Qubits();">8 Qubits</a></li>
+			    			<li><a href="#" onclick="loadEmpty();">Clear</a></li>
+			    		</ul>
+			    	</a>
+			    </li>
+		    </ul>
+		</div>
+
+			<!-- Content -->
+		<div class="main">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="tab-wrap" style="margin-left: 40px;">
+							<div class="row">
+								<div class="col-md-12 col-lg-12 col-xl-8 p-0">
+									<div class="main-tab-wrap common-wrap">
+										<div class="circuit-composer">
+											<h3>Circuit Composer</h3>
+											<div class="row">
+												<div class="col-md-6 col-lg-4">
+													<div class="gates">
+														<h5>Gates</h5>
+														<div>
+															<div style="background-image:url('img/icons/gate-i.png')" id="i-gate" class="gate I" draggable="true" ondragstart="drag(event)" data-gate="I"></div>
+															<div style="background-image:url('img/icons/gate-h.png')" id="h-gate" class="gate H" draggable="true" ondragstart="drag(event)" data-gate="H"></div>
+															<div style="background-image:url('img/icons/gate-x.png')" id="x-gate" class="gate X" draggable="true" ondragstart="drag(event)" data-gate="X"></div>
+															<div style="background-image:url('img/icons/gate-y.png')" id="y-gate" class="gate Y" draggable="true" ondragstart="drag(event)" data-gate="Y"></div>
+															<div style="background-image:url('img/icons/gate-z.png')" id="z-gate" class="gate Z" draggable="true" ondragstart="drag(event)" data-gate="Z"></div>
+															<div style="background-image:url('img/icons/gate-root.png')"  id="x-gate" class="gate X" draggable="true" ondragstart="drag(event)" data-gate="Root"></div>
+															<div style="background-image:url('img/icons/gate-rt.png')" id="ry-gate" class="gate Ry" draggable="true" ondragstart="drag(event)" data-gate="Rt,0"></div>
+															<div style="background-image:url('img/icons/gate-t.png')" id="i-gate" class="gate Z" draggable="true" ondragstart="drag(event)" data-gate="Rt,45"></div>
+															<div style="background-image:url('img/icons/gate-s.png')" id="i-gate" class="gate Z" draggable="true" ondragstart="drag(event)" data-gate="Rt,90"></div>
+															<div style="background-image:url('img/icons/gate-rx.png')" id="i-gate" class="gate Z" draggable="true" ondragstart="drag(event)" data-gate="Rx,45"></div>
+															<div style="background-image:url('img/icons/gate-ry.png')" id="ry-gate" class="gate Ry" draggable="true" ondragstart="drag(event)" data-gate="Ry,45"></div>
+															<div style="background-image:url('img/icons/gate-rz.png')" id="ry-gate" class="gate Ry" draggable="true" ondragstart="drag(event)" data-gate="Rz,45"></div>
+															<div style="background-image:url('img/icons/gate-c.png')" id="c-gate" class="gate" draggable="true" ondragstart="drag(event)" data-gate="C"></div>
+															<div style="background-image:url('img/icons/gate-n.png')" id="n-gate" class="gate" draggable="true" ondragstart="drag(event)" data-gate="N"></div>
+															<div style="background-image:url('img/icons/gate-measure.png')" id="m-gate" class="gate Measure" draggable="true" ondragstart="drag(event)" data-gate="Measure"></div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6 col-lg-3">
+													<div class="visuals">
+														<h5>Visuals</h5>
+														<div>
+															<div style="background-image:url('img/icons/v-probability.png')" id="probability" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Probability"></div>
+															<div style="background-image:url('img/icons/v-qubit.png')" id="qubit" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Qubit"></div>
+															<div style="background-image:url('img/icons/v-sample.png')" id="sample" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Sample"></div>
+															<div style="background-image:url('img/icons/v-circle.png')" id="circle" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Circle"></div>
+															<div style="background-image:url('img/icons/v-mcircle.png')" id="m-circle" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="MCircle"></div>
+															<div style="background-image:url('img/icons/v-bar.png')" id="bar-chart" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="BarChart"></div>
+															<div style="background-image:url('img/icons/v-bloch.png')" id="bloch" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Bloch"></div>
+															<div style="background-image:url('img/icons/v-vector.png')" id="vector" class="gate visual" draggable="true" ondragstart="drag(event)" data-gate="Vector"></div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6 col-lg-2">
+													<div class="classic">
+														<h5>Classic</h5>
+														<div>
+															<div style="background-image:url('img/icons/classic-0.png')" class="gate" draggable="true" ondragstart="drag(event)" data-gate="Classic,0"></div>
+															<div style="background-image:url('img/icons/classic-1.png')" class="gate" draggable="true" ondragstart="drag(event)" data-gate="Classic,1"></div>
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6 col-lg-3">
+													<div class="outputs">
+														<h5>Outputs</h5>
+														<div>
+															<div style="background-image:url('img/icons/message.png');width:86px;height:36px;margin:5px;" draggable="true" ondragstart="drag(event)" data-gate="Out-Message"></div>
+															<div style="background-image:url('img/icons/qubit.png');width:86px;height:36px;margin:5px;"  draggable="true" ondragstart="drag(event)" data-gate="Out-Qubit"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>												
+										<div class="others-wrap" style="height:85%">
+											<h5>Circuit</h5>
+											<div style="position: relative;left:500px;top:-35px;" id="state-title"> 
+												<h5 >State</h5>
+											</div>
+											<div class="split-pane fixed-right">															
+												<div class="split-pane-component" id="left-component">																													
+													<div id="qv-container" draggable="true">
+														<svg id="qv-svg" width="100%"  height="100%" draggable="true">
+														</svg>
+													</div>                            
+												</div>
+												<div class="split-pane-divider" id="my-divider"></div>
+												<div class="split-pane-component" id="right-component">
+													<svg id="qv-state-svg">
+													</svg>
+												</div>
+											</div>													
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12 col-lg-12 col-xl-4">
+									<div class="aside-bar">
+										<div class="circuit-editor common-wrap">
+											<h3>Circuit Editor</h3>
+											<div class="code">
+												<div id="qv-sharp">
+												</div>
+											</div>
+										</div>
+										<div class="output-pane common-wrap">
+											<h3>Outputs</h3>
+											<div class="code">
+												<div id="outputs">
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+	
+			<!-- <div class="copyrights text-center">
+				<p>&copy; 2019 Microsoft, Inc. All rights Reserved.<span>  <a href="#">Privacy</a>  |  <a href="#">Terms and Use</a>  |  <a href="#">End user agreement</a>  |  <a href="#">Cookie references</a></span></p>
+			</div> -->
+		</div>
+
+        <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="scripts/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="scripts/custom.js" ></script>
+		<script src="scripts/svg.min.js"></script>
+        <script src="scripts/svg.draggable.min.js"></script>
+        <script src="scripts/bono-visual.js"></script>   
+        <script src="scripts/bono.js"></script>
+        <script src="scripts/bono-qsharp.js"></script>   
+        <script src="scripts/ace/ace.js"></script>
+        <script src="scripts/ace/theme-xcode.js"></script>
+        <script src="scripts/ace/mode-qsharp.js"></script>
+        <script src="scripts/split-pane/split-pane.js"></script>
+		
+		<script type="text/javascript">
+			var render = true;
+            var editor;
+            var codeHash = "";
+            var circuitHash = "";
+            var clickMode = "arrow";
+            var stateVisual = null;
+			var mainVisual = null;
+			var currentDesc = null;
+
+		    $(window).on('load',function(){
+		        $('#myModal').modal('show');
+				setTimeout(closeDialog, 5000);
+
+				$('div.split-pane').splitPane();
+                // set up Q# editor
+                editor = ace.edit("qv-sharp");
+                editor.setTheme("ace/theme/xcode");
+                editor.session.setMode("ace/mode/qsharp");
+               
+                // bind circuit visualizer to div
+                stateVisual = new bonov.StateElement(SVG.get("qv-state-svg").size(2000,600), "qv-state-svg", "state", "MCircle");
+                mainVisual  = new bonov.CircuitElement(SVG.get("qv-svg").size(2000,600), "qv-container", "main");
+
+
+                mainVisual.onclick(function(col) {
+                    //mainVisual.stateCol = col;
+                    stateVisual.render(mainVisual.circuit, mainVisual.stateCol);
+                });
+
+                $("#visual-group").find(".btn").first().button("toogle");
+                loadEmpty();
+		    });
+
+			function closeDialog() {
+				$('#myModal').modal('hide');
+			}			
+     
+            String.prototype.hashCode = function() {
+                var hash = 0, i, chr;
+                if (this.length === 0) return hash;
+                for (i = 0; i < this.length; i++) {
+                    chr   = this.charCodeAt(i);
+                    hash  = ((hash << 5) - hash) + chr;
+                    hash |= 0; // Convert to 32bit integer
+                }
+                return hash;
+            };
+            
+            function startRenderLoop() {
+                render = true;
+                setTimeout(renderFrame, 100);
+            }
+            function renderFrame() {
+                if (render) {
+                    mainVisual.circuit.evaluate();
+                    var newCircuitHash = mainVisual.circuit.hashCode();
+                    if (newCircuitHash != circuitHash) {
+                        mainVisual.render();
+                        stateVisual.render(mainVisual.circuit, mainVisual.stateCol);
+                        circuitHash = newCircuitHash;
+                    } else {
+                        mainVisual.update();
+                        stateVisual.update(mainVisual.circuit, mainVisual.stateCol);
+                    }
+
+                    
+                    var code = bonoq.generateCode(currentDesc, mainVisual.circuit);
+                    var newHash = code.hashCode();
+                    if (newHash != codeHash) {
+                        editor.setValue(code);
+                        codeHash = newHash;
+                    }
+
+                    var outputs = bonov.collectOutputs(mainVisual.circuit);
+                    renderOutputs(outputs, $("#outputs"));
+					updateStateTitle();
+                }
+                setTimeout(renderFrame, 100);
+            }
+            function renderOutputs(outputs, div) {
+                var html = "";
+                for (var i = 0; i < outputs.length; i++) {
+                    html += outputs[i] + "<br/>";
+                }
+                div.html(html);
+            }
+            function drag(ev) {
+                ev.dataTransfer.setData("gate", ev.target.dataset.gate);
+                var img = document.createElement("img");
+                //img.src = "http://kryogenix.org/images/hackergotchi-simpler.png";
+                ev.dataTransfer.setDragImage(img, 0, 0 );
+            }
+            function toggleRender() {
+                render = !render;
+            }
+            function loadRandom() {
+                var circuitDescription = {
+                    columns: [["H","H","H","H","H","H","H","H"],["Sample","Sample","Sample","Sample","Sample","Sample","Sample","Sample"]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial1() {
+                var circuitDescription = {
+                    columns: [["H"],["Sample"]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial2() {
+                var circuitDescription = {
+                    columns: [["H",""], ["C","N"],["Qubit","Qubit"]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial3() {
+                var circuitDescription = {
+                    columns: [["H","H","H","H"],["Rt,45","Rt,90","Rt,135","Rt,180"],["Circle","Circle","Circle","Circle"]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial4() {
+                var circuitDescription = {
+                    columns: [["X","X", ""], ["C","C", "N"],["MCircle","",""]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial5() {
+                var circuitDescription = {
+                    columns: [["Out-Message,Hello World!"]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function loadTutorial6() {
+                var circuitDescription = {
+                    columns: [["H",""],["C","N"],["MCircle",""]]
+                };
+                loadCircuit(circuitDescription);
+            }
+            function switchmode(newMode) {
+                $("#"+clickMode).removeClass("active-mode");
+                clickMode = newMode;
+                $("#"+clickMode).addClass("active-mode");
+                bonov.mode = clickMode;
+            }           
+            function loadCircuit(circuitDescription) {
+				//Load main circuit
+				currentDesc = circuitDescription;
+                render = false;
+                mainVisual.circuit = bono.createCircuit(circuitDescription);
+                mainVisual.stateCol = -1;
+                mainVisual.circuit.evaluate();
+                mainVisual.render();
+                stateVisual.render(mainVisual.circuit, mainVisual.stateCol); 
+
+                startRenderLoop();
+            }
+            
+            function switchVisual(g){
+                $(this).toggleClass("active");
+                stateVisual.gateType = g;
+                var stateCircuit = mainVisual.circuit.clone();
+                updateStateCol(stateCircuit.updateStateCol(stateVisual.gateType, Math.max(mainVisual.stateCol,stateCircuit.gates.length-1)));
+                stateCircuit = stateCircuit.evaluate();
+                stateVisual.render(stateCircuit, mainVisual.stateCol);
+            }
+            function loadEmpty() {
+                var circuitDescription = {columns:[[]]};
+                loadCircuit(circuitDescription);
+            }
+            function loadEraser() {
+                var circuitDescription = {columns: [["H"],["C","N"],["Ry"],["C","N"],["H"],["Measure"]]};
+                loadCircuit(circuitDescription);
+            }
+			function loadTeleportation() {
+                var circuitDescription = {columns: [["","H",""],["", "C","N"],["C","N",""],["H","",""],["Measure","","Z"],["", "Measure","X"]],
+                                          qubits: ["msg", "register", "target"],
+                                          name: "Teleport",
+                                          params: ["msg", "target"]};
+                loadCircuit(circuitDescription);
+            }
+            function load8Qubits() {
+                var circuitDescription = {columns: [["H","H","H","H","H","H","H","H"],["C","C","C","C","C","C","C","N"]]};
+                loadCircuit(circuitDescription);
+			}
+			function updateStateTitle() {
+				$('#state-title').css('left', $('#right-component').offset().left - 100);
+			}
+		</script>
+    </body>
+</html>

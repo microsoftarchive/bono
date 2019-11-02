@@ -1,0 +1,51 @@
+{
+  "_from": "split-pane",
+  "_id": "split-pane@0.5.1",
+  "_inBundle": false,
+  "_integrity": "sha1-eOLaaKkWcb86dyhVRwd+GNqmREo=",
+  "_location": "/split-pane",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "split-pane",
+    "name": "split-pane",
+    "escapedName": "split-pane",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/split-pane/-/split-pane-0.5.1.tgz",
+  "_shasum": "78e2da68a91671bf3a77285547077e18daa6444a",
+  "_spec": "split-pane",
+  "_where": "C:\\Users\\hbai\\go\\src\\github.com\\Haishi2016\\bono\\html\\scripts",
+  "author": {
+    "name": "Simon Hagström",
+    "email": "simon.hagstrom@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/imdone/split-pane/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "jQuery Split Pane plugin",
+  "directories": {
+    "example": "examples"
+  },
+  "homepage": "https://github.com/imdone/split-pane",
+  "license": "MIT",
+  "main": "split-pane.js",
+  "name": "split-pane",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imdone/split-pane.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.5.1"
+}

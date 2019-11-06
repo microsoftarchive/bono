@@ -144,19 +144,25 @@ bono.Stage = class Stage {
         }
     
         while (iIndex < this.inputs.length && gIndex < this.combinedMatrices.length) {
-            if (this.inputs[iCurrent].coefficients.length == this.combinedMatrices[gCurrent].size) {
-                this.outputs.push(this.combinedMatrices[gCurrent].multiply(this.inputs[iCurrent]));
+            if (this.inputs[iCurrent].coefficients.length == this.combinedMatrices[gCurrent].matrix.size) {
+                this.outputs.push(this.combinedMatrices[gCurrent].matrix.multiply(this.inputs[iCurrent]));
+                if (this.combinedMatrices[gCurrent].isMeasure) {
+                    this.outputs[this.outputs.length-1].collapse();
+                }
                 for (var i = iCurrent; i <= iIndex; i++) {
                     if (this.gates[i]) {
                         this.gates[i].output = this.outputs[this.outputs.length-1].clone();
-                        this.gates[i].result = this.outputs[this.outputs.length-1].clone();
+                        if (this.gates[i].type == "Measure") {
+                            this.gates[i].output.collapse();
+                        }
+                        this.gates[i].result = this.gates[i].output.clone();
                     }
                 }
                 iIndex++;
                 gIndex++;
                 iCurrent=iIndex;
                 gCurrent=gIndex;
-            } else if (this.inputs[iCurrent].coefficients.length < this.combinedMatrices[gCurrent].size) {
+            } else if (this.inputs[iCurrent].coefficients.length < this.combinedMatrices[gCurrent].matrix.size) {
                iIndex++;
                if (iIndex < this.inputs.length) {
                    this.inputs[iCurrent] = this.inputs[iCurrent].tensor(this.inputs[iIndex]);
@@ -164,7 +170,8 @@ bono.Stage = class Stage {
             } else {
                 gIndex++;
                 if (gIndex < this.combinedMatrices.length) {
-                    this.combinedMatrices[gCurrent] = this.combinedMatrices[gCurrent].tensor(this.combinedMatrices[gIndex]); //.tensor(this.combinedMatrices[gCurrent]);
+                    this.combinedMatrices[gCurrent].matrix = this.combinedMatrices[gCurrent].matrix.tensor(this.combinedMatrices[gIndex].matrix); //.tensor(this.combinedMatrices[gCurrent]);
+                    this.combinedMatrices[gCurrent].isMeasure = this.combinedMatrices[gCurrent].isMeasure || this.combinedMatrices[gIndex].isMeasure; 
                 }
             }
         }
@@ -189,10 +196,10 @@ bono.Stage = class Stage {
     buildCombinedMatrix() {
         for (var i = 0; i < this.gates.length; i++) {
             if (!this.gates[i].isController && this.gates[i].controllerIndexes.length == 0) {
-                this.combinedMatrices.push(this.gates[i].matrix);
+                this.combinedMatrices.push({matrix: this.gates[i].matrix, isMeasure: this.gates[i].type == "Measure"});
             } else {
                 if (this.gates[i].controllerIndexes.length >0) {
-                    this.combinedMatrices.push(this.gates[i].matrix.makeCNot(bono.intPow2(this.gates[i].controllerIndexes.length+1)));
+                    this.combinedMatrices.push({matrix: this.gates[i].matrix.makeCNot(bono.intPow2(this.gates[i].controllerIndexes.length+1)), isMeasure: false});
                 }
             }
         }
@@ -451,14 +458,36 @@ bono.Qubit = class Qubit {
         this.entangled = [];
         this.register = -1;
         this.name = "";
+        this.isCollapsed = false;
         for (var i = 0; i < coeffs.length; i++) {
             this.coefficients.push(coeffs[i].clone())
+        }
+    }
+    collapse() {
+        if (this.isCollapsed) {
+            return;
+        }
+        var index = Math.floor(Math.random()* this.coefficients.length);
+        for (var i = 0; i < this.coefficients.length; i++) {
+            var j = (i + index) % this.coefficients.length;
+            if (this.coefficients[j].magnitude()>0) {
+                for (var k = 0; k < this.coefficients.length; k++) {
+                    if (k == j) {
+                        this.coefficients[k] = new bono.Complex(1,0);
+                    } else {
+                        this.coefficients[k] = new bono.Complex(0,0);
+                    }
+                }
+                this.isCollapsed = true;
+                return;
+            }
         }
     }
     clone() {   //Our qubit can be copied!
         var ret = new bono.Qubit(this.coefficients);
         ret.entangled = this.entangled.slice(0);
         ret.register = this.register;
+        ret.isCollapsed = this.isCollapsed;
         return ret;
     }
     entangle(list) {

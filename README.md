@@ -1,6 +1,6 @@
 # Bono
 
-Bono is a quantum circuit visualizer that allows you to edit quantum circuits and evalute them at real-time. It also generates [Q#](https://docs.microsoft.com/en-us/quantum/language/?view=qsharp-preview) code that you can take and run on [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit) and in the future, a real quantum computer.
+Bono is a quantum circuit visualizer that allows you to edit quantum circuits and evaluate them at real-time. It also generates [Q#](https://docs.microsoft.com/en-us/quantum/language/?view=qsharp-preview) code that you can take and run on [Microsoft Quantum Development Kit](https://www.microsoft.com/en-us/quantum/development-kit) and in the future, a real quantum computer.
 
 Bono provides the following features:
 
@@ -11,6 +11,7 @@ Bono provides the following features:
 * Switch among a rich set of state visualizations. 
 * Completely open source. 
 
+![Bono](docs/imgs/bono-screen.png)
 # Getting Started
 
 1. Clone this repository.

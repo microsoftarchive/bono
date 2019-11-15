@@ -101,6 +101,10 @@ bonov.CircuitElement = class CircuitElement {
                             var boxWidth = boxSize * this.circuit.stages[g].gates[q].result.coefficients.length + circleSpace * (this.circuit.stages[g].gates[q].result.coefficients.length-1) + this.circuit.stages[g].gates[q].result.coefficients.length/2;
                             this.updateGridSize([boxWidth + this.cellPadding, this.cellSize], g+1, q);
                             break;
+                        case "SQubit":
+                            var boxWidth = this.cellSize * 2.1  + 5;
+                            this.updateGridSize([boxWidth * 2 + this.cellPadding, this.cellSize], g+1, q);
+                            break;
                         case "Qubit":
                             var boxWidth = this.cellSize * 2.1  + Math.log2(this.circuit.stages[g].gates[q].result.coefficients.length) * 5;
                             this.updateGridSize([boxWidth * this.circuit.stages[g].gates[q].result.coefficients.length + this.cellPadding, this.cellSize], g+1, q);
@@ -243,6 +247,9 @@ bonov.CircuitElement = class CircuitElement {
                 break;
             case "Qubit":
                 vElm = new bonov.QubitElement(this.draw, this);
+                break;
+            case "SQubit":
+                vElm = new bonov.SingleQubitElement(this.draw, this);
                 break;
             case "Probability":
                 vElm = new bonov.ProbabilityElement(this.draw, this);
@@ -640,6 +647,87 @@ bonov.MCircleElement = class MCircleElement extends bonov.VisualElement {
             }
         }
         group.move(left+bonov.cellPadding,top);
+    }
+}
+bonov.SingleQubitElement = class SingleQubitElement extends bonov.VisualElement {
+    constructor(draw, parent) {
+        super(draw, "SQubit", parent);
+    }
+    render(stage, s, q, qubit, left, top, registerSize) {
+        var group = this.draw.group();
+        var boxSize = bonov.cellSize - bonov.cellPadding * 2;
+        var boxWidth = bonov.cellSize * 2.1  +  5;
+        var rect = this.draw.rect(boxWidth * 2, boxSize).fill('#323232').radius(boxSize/2);
+        var zero = new bono.Complex(0,0);
+        var one = new bono.Complex(0,0);
+        //var inQubit = qubit.smallEndian();
+        var mask = 1;
+        if (q > 0) {
+            mask = 1 << q;
+        }
+         for (var i = 0; i < qubit.coefficients.length; i++) {
+            if (((qubit.coefficients.length-1-i) & mask) > 0) {
+                zero = zero.add(qubit.coefficients[i]);
+            } else if ((i & mask) > 0) {
+                one = one.add(qubit.coefficients[i]);
+            }
+        }
+        var newQubit = new bono.Qubit([zero, one]);
+        var text = this.makeText(newQubit);
+        text.node.id = this.parent.makeGateId(s,q) + "-t";
+        text.center(boxWidth , boxSize/2);
+        group.add(rect);
+        group.add(text);
+        group.move(left+bonov.cellPadding,top+bonov.cellPadding);      
+    }
+    makeText(qubit) {
+        var notations = [];
+        for (var i = 0; i < qubit.coefficients.length; i++) {
+            var str = i.toString(2);
+            var bits = Math.round(Math.log2(qubit.coefficients.length));
+            if (str.length < bits) {
+                str = "0".repeat(bits - str.length) + str;
+            }
+            notations.push("|" + str + ">");
+        }
+        var text = this.draw.text('').fill('white').font({size: 18, family: 'Helvetica'});
+        text.build(true);
+        if (qubit.coefficients[0].a >= 0) { //TBD: This is incorrrect
+            text.tspan(this.formatNumber(qubit.coefficients[0].magnitude().toFixed(2), 4)).fill('lawngreen');
+        } else {
+            text.tspan(this.formatNumber(qubit.coefficients[0].magnitude().toFixed(2), 4)).fill('red');
+        }
+        text.plain(notations[0]);
+        for (var i = 1; i < qubit.coefficients.length; i++) {
+            if (qubit.coefficients[i].a >= 0) { //TBD: This is incorrect
+                text.plain(' + ');
+            } else {
+                text.plain(' - ');
+            }
+            if (qubit.coefficients[i].a >= 0) { //TBD: This is incorrect
+                text.tspan(this.formatNumber(qubit.coefficients[i].magnitude().toFixed(2), 4)).fill('lawngreen');
+            } else {
+                text.tspan(this.formatNumber(qubit.coefficients[i].magnitude().toFixed(2), 4)).fill('red');
+            }
+            text.plain(notations[i]);
+        }
+        text.build(false);
+        return text;
+    }
+    formatNumber(number,digits) {
+        var k = Math.abs(number);
+        var s = k.toString().padEnd(4, "0");
+        if (k == 1) {
+            s = "1.00";
+        } else if ( k == 0) {
+            s = "0.00";
+        }
+        return s;
+    }
+    update(s, q, qubit) {
+        var text = this.makeText(qubit);
+        text.node.id = this.parent.makeGateId(s,q) + "-t";
+        SVG.get(this.parent.makeGateId(s,q)+"-t").replace(text);        
     }
 }
 bonov.QubitElement = class QubitElement extends bonov.VisualElement {

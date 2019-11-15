@@ -77,6 +77,7 @@ var bono = {
                 }
                 break;
             case 'Qubit':
+            case 'SQubit':
             case 'Probability':
             case 'Circle':
             case 'MCircle':
@@ -145,16 +146,24 @@ bono.Stage = class Stage {
     
         while (iIndex < this.inputs.length && gIndex < this.combinedMatrices.length) {
             if (this.inputs[iCurrent].coefficients.length == this.combinedMatrices[gCurrent].matrix.size) {
-                this.outputs.push(this.combinedMatrices[gCurrent].matrix.multiply(this.inputs[iCurrent]));
                 if (this.combinedMatrices[gCurrent].isMeasure) {
-                    this.outputs[this.outputs.length-1].collapse();
+                    if (!this.inputs[iCurrent].isCollapsed) {
+                        this.inputs[iCurrent].collapse();
+                    }
                 }
+                this.outputs.push(this.combinedMatrices[gCurrent].matrix.multiply(this.inputs[iCurrent]));
+                if (this.inputs[iCurrent].isCollapsed) {
+                    this.outputs[this.outputs.length-1].isCollapsed = true;
+                }
+                //if (this.combinedMatrices[gCurrent].isMeasure) {
+                //    this.outputs[this.outputs.length-1].collapse();
+                //}
                 for (var i = iCurrent; i <= iIndex; i++) {
                     if (this.gates[i]) {
                         this.gates[i].output = this.outputs[this.outputs.length-1].clone();
-                        if (this.gates[i].type == "Measure") {
-                            this.gates[i].output.collapse();
-                        }
+                        //if (this.gates[i].type == "Measure") {
+                        //    this.gates[i].output.collapse();
+                        //}
                         this.gates[i].result = this.gates[i].output.clone();
                     }
                 }
@@ -199,7 +208,8 @@ bono.Stage = class Stage {
                 this.combinedMatrices.push({matrix: this.gates[i].matrix, isMeasure: this.gates[i].type == "Measure"});
             } else {
                 if (this.gates[i].controllerIndexes.length >0) {
-                    this.combinedMatrices.push({matrix: this.gates[i].matrix.makeControlledGate(bono.intPow2(this.gates[i].controllerIndexes.length+1)), isMeasure: false});
+                    //this.combinedMatrices.push({matrix: this.gates[i].matrix.makeCNot(bono.intPow2(this.gates[i].controllerIndexes.length+1)), isMeasure: false});
+                    this.combinedMatrices.push({matrix: this.gates[i].matrix.makeControlledMatrix(bono.intPow2(this.gates[i].controllerIndexes.length+1),this.gates[i].matrix), isMeasure: false});
                 }
             }
         }
@@ -208,7 +218,6 @@ bono.Stage = class Stage {
         var gList = [];
         var cList = [];
         var lastType = "";
-        var ctrlType = "";
         for (var i = 0; i < this.gates.length; i++) {
             if (!this.gates[i]) {
                 continue;
@@ -217,17 +226,17 @@ bono.Stage = class Stage {
             this.gates[i].controllerIndexes = [];
             switch (this.gates[i].type) {
                 case "C":
-                case "Measure":
                     if (cList.length == 0) {
                         cList.push([i])
                     } else {
                         cList[cList.length-1].push(i);
                     }
                     lastType = this.gates[i].type;
-                    ctrlType = this.gates[i].type;
+                    break;
+                case "Measure":
                     break;
                 case "Empty":
-                    if (lastType != "C" && lastType != "Measure") {
+                    if (lastType != "C") {
                         cList.push([]);
                     }
                     break;
@@ -248,7 +257,6 @@ bono.Stage = class Stage {
         for (var i = 0; i < gList.length; i++) {
             if (cList.length-1 >= i) {
                 this.gates[gList[i]].controllerIndexes = cList[i].slice(0);
-                this.gates[gList[i]].controllerType = ctrlType;
                 for (var j = 0; j < cList[i].length; j++) {
                     this.gates[cList[i][j]].isController = true;
                 }
@@ -336,6 +344,92 @@ bono.Circuit = class Circuit {
             }
         }
     }
+    resetLinks() {
+         for (var s = 0; s < this.stages.length; s++) {
+             if (this.stages[s]) {
+            for (var q = 0; q < this.stages[s].gates.length; q++) {
+                if (this.stages[s].gates[q]) {
+                    this.stages[s].gates[q].colIndex = s;
+                    this.stages[s].gates[q].rowIndex = q;
+                    this.stages[s].gates[q].isControl = false;
+                    this.stages[s].gates[q].controllerIndexes = [];
+                    this.stages[s].gates[q].controllerType = '';
+                }
+            }
+        }
+        }
+    }
+    recreateLinks() {
+        for (var s = 0; s < this.stages.length; s++) {
+            if (this.stages[s]) {
+                var nList = [];
+                var cList = [];
+                var inCStream = false;
+                var inMStream = false;
+                var mSpot = -1;
+                var mcSpot = -1;
+                for (var q = 0; q < this.stages[s].gates.length; q++) {
+                    if (this.stages[s].gates[q] == null) {
+                        continue;
+                    }
+                    if (this.stages[s].gates[q].type == "N") {
+                        if (inMStream && mcSpot < 0) {
+                            mcSpot = q;
+                            inMStream = false;
+                        } else {
+                            nList.push(q);
+                        }
+                    } else if (this.stages[s].gates[q].type == "C") {
+                        if (inCStream) {
+                            cList[cList.length-1].push(q);
+                        } else {
+                            inCStream = true;
+                            cList.push([q]);
+                        }
+                    } else if (this.stages[s].gates[q].type == "Measure") {
+                        inMStream = true;
+                        mSpot = q;
+                    } else {
+                        if (this.stages[s].gates[q] != null && this.stages[s].gates[q].type != "Empty") {
+                            inCStream = false;
+                            if (inMStream && mcSpot < 0) {
+                                mcSpot = q;
+                                inMStream = false;
+                            }
+                        }
+                    }
+                }
+                if (mSpot >= 0 && mcSpot >= 0) {
+                    this.stages[s].gates[mcSpot].controllerIndexes = [mSpot];
+                    this.stages[s].gates[mcSpot].controllerType = "Measure";
+                    this.stages[s].gates[mSpot].isControl = true;
+                }
+                var cIndex = 0;
+                for (var n = 0; n < nList.length; n++) {
+                    if (n <= cList.length-1) {
+                        this.stages[s].gates[nList[n]].controllerIndexes = cList[n].slice(0).sort();
+                        this.stages[s].gates[nList[n]].controllerType = "C";
+
+                        this.qubits[nList[n]].entangle(cList[n]);
+                        this.qubits[nList[n]].entangle([nList[n]]);
+                        var allEntangled = [];
+                        for (var i = 0; i < this.qubits[nList[n]].entangled.length; i++)
+                         {
+                             allEntangled = allEntangled.concat(this.qubits[this.qubits[nList[n]].entangled[i]].entangled);
+                         }
+                         for (var i = 0; i < allEntangled.length; i++)
+                         { 
+                             this.qubits[allEntangled[i]].entangle(allEntangled);
+                         }
+
+                        for (var i = 0; i < cList[n].length; i++) {
+                            this.stages[s].gates[cList[n][i]].isControl = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
     assignRegisters() {
         var register = 0;
         for (var qi = 0; qi < this.qubits.length; qi++) {
@@ -351,6 +445,8 @@ bono.Circuit = class Circuit {
     compact() {
         this.removeEmptyGates();
         this.removeEmptyQubits();
+        this.resetLinks();
+        this.recreateLinks();
         this.assignRegisters();
         for (var s = 0; s < this.stages.length; s++) {
             var gap = this.qubits.length - this.stages[s].gates.length;
@@ -629,7 +725,52 @@ bono.Gate = class Gate {
         other.isClassic = this.isClassic;
         other.parameters = this.parameters.slice(0);
         other.controllerType = this.controllerType;
-    } 
+    }
+    evaluate(input, circuit) {
+        if (input == null)
+            return;
+        this.input = input.clone();
+        if (this.type == "Empty") {
+            this.output = this.input.clone();
+            this.result = this.input.clone();
+            return;
+        }
+        var tmpMatrix = null;
+        if (this.matrix.size != this.input.coefficients.length) {
+            if (this.controllerIndexes.length > 0) {
+                tmpMatrix = this.matrix.makeCNot(this.input.coefficients.length);
+            } else if (!this.isControl) {
+                if (circuit.qubits[this.rowIndex].entangled.length != 0) {
+                    tmpMatrix = circuit.stages[this.colIndex].gates[circuit.qubits[this.rowIndex].entangled[0]].matrix;
+                    for (var i = 1; i < circuit.qubits[this.rowIndex].entangled.length; i++) {
+                        tmpMatrix = circuit.stages[this.colIndex].gates[circuit.qubits[this.rowIndex].entangled[i]].matrix.tensor(tmpMatrix);
+                    }
+                } else {
+                    tmpMatrix = this.matrix.selfMultiply(Math.floor(Math.log2(this.input.coefficients.length / this.matrix.size)));
+                }
+            } else {
+                tmpMatrix = this.matrix.makeIdentity(this.input.coefficients.length);
+            }
+        } else {
+            tmpMatrix = this.matrix.clone();
+        }
+        if (tmpMatrix.size != this.input.coefficients.length) {
+            throw "mismatch:\r\n\tMatrix size: " + tmpMatrix.size 
+                    + "\r\n\tInput size: " + this.input.coefficients.length 
+                    + "\r\n\tGate: " + this.desc
+                    + "\r\n\tEntangled: " + circuit.qubits[this.rowIndex].entangled;
+        }
+        this.error = '';
+        this.output = new bono.Qubit(this.input.coefficients);
+        this.result = new bono.Qubit(this.input.coefficients);
+        for (var i = 0; i < this.input.coefficients.length; i++) {
+            this.output.coefficients[i] = new bono.Complex(0,0);
+            for (var j = 0; j < this.input.coefficients.length; j++) {
+                this.output.coefficients[i] = this.output.coefficients[i].add(tmpMatrix.data[i][j].multiply(this.input.coefficients[j]));
+            }
+        }
+        this.result = this.output.clone();
+    }
 }
 bono.Matrix = class Matrix {
     constructor() {
@@ -665,12 +806,13 @@ bono.Matrix = class Matrix {
         tmp.data[mSize-1][mSize-2] = new bono.Complex(1,0);
         return tmp;
     }
-    makeControlledGate(mSize) {
+    makeControlledMatrix(mSize, matrix) {
         var tmp = this.makeIdentity(mSize);
-        tmp.data[mSize-2][mSize-2] = this.data[0][0].clone();
-        tmp.data[mSize-2][mSize-1] = this.data[0][1].clone();
-        tmp.data[mSize-1][mSize-2] = this.data[1][0].clone();
-        tmp.data[mSize-1][mSize-1] = this.data[1][1].clone();;
+        for (var i = 0; i < matrix.size; i++) {
+            for (var j = 0; j < matrix.size; j++) {
+                tmp.data[mSize-(matrix.size-i)][mSize-(matrix.size-j)] = matrix.data[i][j].clone();
+            }
+        }
         return tmp;
     }
     makeIdentity(size) {
